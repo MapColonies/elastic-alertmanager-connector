@@ -1,0 +1,26 @@
+replicaCount: 1
+nameOverride: ''
+
+image:
+  registry: ''
+  repository: elastic-alertmanager-connector
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+  pullSecrets:
+    # - name: my-registry-secret  
+
+server:
+  host: ''
+  username: ''
+  password: ''
+  index: ''
+
+resources:
+  enabled: true
+  value:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
