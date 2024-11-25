@@ -2,18 +2,21 @@ replicaCount: 1
 nameOverride: ''
 
 image:
-  registry: ''
+  registry: 'acrarolibotnonprod.azurecr.io'
   repository: elastic-alertmanager-connector
   tag: v1.0.0
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   pullSecrets:
-    # - name: my-registry-secret  
+    - name: registry
 
 server:
-  host: ''
-  username: ''
-  password: ''
-  index: ''
+  host: 'https://elastic-elasticsearch:9200'
+  username: 'elastic'
+  password: 'elasticPassword'
+  index: 'data'
+  certs: 
+    verify: true
+    path: '' # Works only if certs.verify is "true"
 
 resources:
   enabled: true
@@ -24,3 +27,25 @@ resources:
     requests:
       cpu: 100m
       memory: 128Mi
+
+extraVolumes:
+  - name: nginx-config
+    configMap:
+      name: "raster-serving-dev-pycsw-nginx-configmap"
+  - name: envoy-config
+    configMap:
+      name: "{{ .Release.Name }}-pycsw-envoy-configmap"
+  - name: opa-policy
+    secret:
+      secretName: "{{ .Release.Name }}-opa"
+
+extraVolumeMounts:
+  - name: nginx-config
+    mountPath: "/etc/nginx/conf.d/default.conf"
+    subPath: default.conf
+  - mountPath: "/etc/nginx/nginx.conf"
+    name: nginx-config
+    subPath: nginx.conf
+  - name: nginx-config
+    mountPath: "/etc/nginx/log_format.conf"
+    subPath: log_format.conf
