@@ -1,6 +1,13 @@
 replicaCount: 1
 nameOverride: ''
 
+global:
+  commonLabelsAndAnnotations:
+    environment: "development"
+    component: "infrastructure"
+    partOf: "monitoring"
+    owner: "infra" 
+
 image:
   registry: 'acrarolibotnonprod.azurecr.io'
   repository: elastic-alertmanager-connector

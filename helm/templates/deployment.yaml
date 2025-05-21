@@ -5,7 +5,10 @@ kind: Deployment
 metadata:
   name: {{ $fullName }}-deployment
   labels:
-     {{- include "elastic-alertmanager-connector.labels" . | nindent 4 }}  
+    {{- include "elastic-alertmanager-connector.labels" . | nindent 4 }}  
+    {{ include "common-labels-and-annotations.labels" . | nindent 4 }}
+  annotations:
+    {{ include "common-labels-and-annotations.annotations" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
