@@ -16,14 +16,23 @@ permissions:
   pull-requests: write
 
 jobs:
-  build_and_push_docker:
-    uses: MapColonies/shared-workflows/.github/workflows/build-and-push-docker.yaml@v2
-    secrets: inherit
-    with:
-      scope: infra
+- name: Artifactory Login
+  uses: MapColonies/shared-workflows/actions/artifactory-login@9a05fd7a01e18746d69cc210b7e6defbd1cc79fc # v1.0.0
+  with:
+    registry: ${{ secrets.ACR_URL }}
+    username: ${{ secrets.ACR_PUSH_USER }}
+    password: ${{ secrets.ACR_PUSH_TOKEN }}
 
-  build_and_push_helm:
-    uses: MapColonies/shared-workflows/.github/workflows/build-and-push-helm.yaml@v2
-    secrets: inherit
-    with:
-      scope: infra
+- name: Build Docker Image
+  uses: MapColonies/shared-workflows/actions/build-docker@build-docker-v1.0.0
+  with:
+    context: .
+    domain: infra
+    registry: ${{ secrets.ACR_URL }}
+
+- name: Build and Push Helm Chart
+  uses: MapColonies/shared-workflows/actions/build-and-push-helm@build-and-push-helm-v1.0.0
+  with:
+    context: ./helm
+    domain: infra
+    registry: ${{ secrets.ACR_URL }}
